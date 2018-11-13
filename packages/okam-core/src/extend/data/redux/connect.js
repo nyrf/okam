@@ -78,7 +78,12 @@ function normalizeStoreActions(actionMap) {
     toAction && Object.keys(toAction).forEach(k => {
         let act = toAction[k];
         toAction[k] = function (...args) {
-            this.$store.dispatch(act.apply(null, args));
+            let actType = typeof act;
+            if (actType === 'string') {
+                this.$store.dispatch({type: act, payload: args});
+            } else {
+                this.$store.dispatch(act.apply(null, args));
+            }
         };
     });
     return toAction;
